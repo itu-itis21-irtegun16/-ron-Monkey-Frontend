@@ -1,0 +1,137 @@
+<template>
+    <v-card light class="sign-card" :class="{cardSize : isDesktop }">
+         <v-img
+            class="white--text align-end"
+            height="200px"
+            src="https://picsum.photos/1920/1080?random"
+            lazy-src
+            style="margin-bottom: 20px"
+        >
+        </v-img>
+
+        <form>
+            <v-text-field
+            v-model="email"
+            :error-messages="emailErrors"
+            label="E-mail"
+            required
+            @input="$v.email.$touch()"
+            @blur="$v.email.$touch()"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="password"
+              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules="[rules.required, rules.min]"
+              :type="show1 ? 'text' : 'password'"
+              name="input-10-1"
+              label="Password"
+              hint="At least 8 characters"
+              counter
+              @click:append="show1 = !show1"
+            ></v-text-field>
+            <v-btn color="green" class="mr-4 submit-clear-button" @click="submit">submit</v-btn>
+            <v-btn color="red" class="submit-clear-button" @click="clear">clear</v-btn>
+        </form>
+        <v-card-actions class="card-actions">
+            <router-link to="/register" style="text-decoration: none">
+                <v-btn >Create a new account</v-btn>
+            </router-link>
+        </v-card-actions>
+    </v-card>
+</template>
+
+<script>
+import { validationMixin } from 'vuelidate'
+import { required, email } from 'vuelidate/lib/validators'
+import { mapMutations } from 'vuex'
+
+export default {
+    name: 'sign-in',
+    mixins: [validationMixin],
+    validations: {
+      email: { required, email },
+    },
+
+    data: () => ({
+        email: '',
+        show1: false,
+        password: '',
+        rules: {
+            required: value => !!value || 'Required.',
+            min: v => v.length >= 8 || 'Min 8 characters',
+        },
+        isSignIn: true,
+        isDesktop: true
+    }),
+
+    computed : {
+        emailErrors () {
+            const errors = []
+            if (!this.$v.email.$dirty) return errors
+            !this.$v.email.email && errors.push('Must be valid e-mail')
+            !this.$v.email.required && errors.push('E-mail is required')
+            return errors
+        },
+    },
+    methods : {
+        ...mapMutations([
+            'setUser',
+            'setToken'
+        ]),
+        submit : function(){
+            this.$v.$touch();
+            let user = {
+                email : this.email,
+                password : this.password
+            }
+
+            this.$axios.post('3.139.54.157:8080/sign-in', user)
+                .then(res =>{
+                    if(res.status === 200){
+                        localStorage.setItem('token', res.data.token)
+                        localStorage.setItem('user', JSON.stringify(res.data.user))
+                        this.setUser(res.data.user);
+                        this.setToken(res.data.token);
+                        this.$router.push('/')
+                    }
+                }, err =>{
+                    console.log(err.response)
+                })
+        },
+        clear : function(){
+            this.$v.$reset()
+            this.email = '',
+            this.password = ''
+        },
+        
+    },
+    created : function(){
+        if(this.$isMobile()){
+            this.isDesktop = false
+        }
+    },
+}
+</script>
+
+<style scoped>
+    .sign-card{
+        padding: 20px;
+        
+    }
+
+    .cardSize{
+        margin: auto;
+        width: 50%;
+    }
+
+    .card-actions{
+        justify-content: center;
+        margin: 20px;
+    }
+
+    .submit-clear-button{
+      width: 47%;
+      margin-top: 12px;
+    }
+</style>
