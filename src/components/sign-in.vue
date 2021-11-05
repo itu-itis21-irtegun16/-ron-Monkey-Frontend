@@ -8,7 +8,9 @@
             style="margin-bottom: 20px"
         >
         </v-img>
-
+        <v-alert type="error" v-model="alert" dismissible >
+            {{errorMessage}}
+        </v-alert>
         <form>
             <v-text-field
             v-model="email"
@@ -30,14 +32,17 @@
               counter
               @click:append="show1 = !show1"
             ></v-text-field>
-            <v-btn color="green" class="mr-4 submit-clear-button" @click="submit">submit</v-btn>
+            <v-btn :disabled="disableCheck" color="green" class="mr-4 submit-clear-button" @click="submit">submit</v-btn>
             <v-btn color="red" class="submit-clear-button" @click="clear">clear</v-btn>
         </form>
+        
+
         <v-card-actions class="card-actions">
             <router-link to="/register" style="text-decoration: none">
                 <v-btn >Create a new account</v-btn>
             </router-link>
         </v-card-actions>
+        
     </v-card>
 </template>
 
@@ -62,7 +67,9 @@ export default {
             min: v => v.length >= 8 || 'Min 8 characters',
         },
         isSignIn: true,
-        isDesktop: true
+        isDesktop: true,
+        alert: false,
+        errorMessage: '',
     }),
 
     computed : {
@@ -73,6 +80,10 @@ export default {
             !this.$v.email.required && errors.push('E-mail is required')
             return errors
         },
+        disableCheck(){
+            if(this.emailErrors.length > 0 || this.password == '') return true
+            return false;
+        }
     },
     methods : {
         ...mapMutations([
@@ -96,7 +107,24 @@ export default {
                         this.$router.push('/')
                     }
                 }, err =>{
-                    console.log(err.response)
+                    if(err.response.status === 401){
+                        var errorData = err.response.data;
+                        if(errorData.title == 'wrong password'){
+                            this.alert = true;
+                            this.errorMessage = 'Wrong Password'
+                            setTimeout(() => {
+                                this.alert = false;
+                                this.errorMessage = ''
+                            }, 4000);
+                        }else{
+                            this.alert = true;
+                            this.errorMessage = 'User Not Found'
+                            setTimeout(() => {
+                                this.alert = false;
+                                this.errorMessage = ''
+                            }, 4000);
+                        }
+                    }
                 })
         },
         clear : function(){
