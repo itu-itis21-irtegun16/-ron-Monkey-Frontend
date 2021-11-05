@@ -116,17 +116,13 @@
               suffix="cm"
             ></v-text-field>
             
+            <v-alert type="error" v-model="alert" dismissible >
+                {{errorMessage}}
+            </v-alert>
 
-            <v-checkbox
-            v-model="checkbox"
-            :error-messages="checkboxErrors"
-            label="Do you agree?"
-            required
-            @change="$v.checkbox.$touch()"
-            @blur="$v.checkbox.$touch()"
-            ></v-checkbox>
+            
 
-            <v-btn color="green" class="mr-4 submit-clear-button" @click="submit">submit</v-btn>
+            <v-btn :disabled="errorCheck" color="green" class="mr-4 submit-clear-button" @click="submit">submit</v-btn>
             <v-btn color="red" class="submit-clear-button" @click="clear">clear</v-btn>
         </form>
         
@@ -151,11 +147,7 @@
       lastname: { required, maxLength: maxLength(40) },
       email: { required, email },
       select: { required },
-      checkbox: {
-        checked (val) {
-          return val
-        },
-      },
+      
     },
 
     data: () => ({
@@ -170,7 +162,6 @@
         'Male',
         'Others',
         ],
-        checkbox: false,
         date: null, 
         modal: false,
         show1: false,
@@ -179,17 +170,13 @@
           required: value => !!value || 'Required.',
           min: v => v.length >= 8 || 'Min 8 characters',
         },
-        isDesktop : true
+        isDesktop : true,
+        alert: false,
+        errorMessage: ''
     }),
     
 
     computed: {
-      checkboxErrors () {
-        const errors = []
-        if (!this.$v.checkbox.$dirty) return errors
-        !this.$v.checkbox.checked && errors.push('You must agree to continue!')
-        return errors
-      },
       selectErrors () {
         const errors = []
         if (!this.$v.select.$dirty) return errors
@@ -223,7 +210,16 @@
         let difference = currentDate - birthDate;
         let age = Math.floor(difference/31557600000);
         return age
-      }
+      },
+      errorCheck: function(){
+        if(
+            this.nameErrors.length > 0 || this.name == '' || 
+            this.emailErrors.length > 0 || this.email == '' ||
+            this.lastNameErrors.length > 0 || this.lastname == '' ||
+            this.password == ''
+          ) return true
+        return false;
+      },
     },
 
     methods: {
@@ -239,13 +235,18 @@
           weight : this.weight,
           tall : this.tall
         }
-        this.$axios.post('http://3.139.54.157:8080/register', newUser)
+        this.$axios.post('http://localhost:3000/register', newUser)
           .then(res => {
             if(res.status == 200){
               this.$router.push('/sign-in');
             }
           }, err =>{
-            console.log(err.response)
+            this.alert = true;
+            this.errorMessage = err.response.data.title;
+            setTimeout(() => {
+              this.alert = false;
+              this.errorMessage = ''
+            }, 4000);
           })
       },
       clear () {
@@ -254,8 +255,7 @@
         this.lastname = ''
         this.email = ''
         this.select = null,
-        this.date = null    ,
-        this.checkbox = false,
+        this.date = null,
         this.weight = null,
         this.tall = null,
         this.password = ''
