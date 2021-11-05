@@ -1,5 +1,5 @@
 import axios from 'axios'
-const APIUrl = '3.139.54.157:8080'
+const APIUrl = 'http://3.139.54.157:8080'
 export default {
     initMessageList({commit}){
         axios.get(`${APIUrl}/wise-saying`)

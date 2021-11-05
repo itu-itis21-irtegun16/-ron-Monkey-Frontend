@@ -1,5 +1,5 @@
-import axios from "axios";
+// import axios from "axios";
 
-axios.defaults.baseURL = '3.139.54.157:8080';
+// axios.defaults.baseURL = '3.139.54.157:8080';
 
-export default axios
+// export default axios

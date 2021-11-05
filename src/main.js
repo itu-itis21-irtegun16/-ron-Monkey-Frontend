@@ -11,7 +11,7 @@ import en from 'javascript-time-ago/locale/en.json'
 
 
 const axiosInstance = axios.create({
-  baseURL: "3.139.54.157:8080"
+  baseURL: ""
 });
 
 Vue.prototype.$axios = axiosInstance; 
