@@ -1,8 +1,8 @@
 <template>
   <v-app class="vue-app">
-    <header>
+    <!-- <header>
       <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    </header>
+    </header> -->
     <navbar></navbar>
     <router-view/>
     <app-footer></app-footer>
