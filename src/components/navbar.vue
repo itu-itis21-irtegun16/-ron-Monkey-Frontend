@@ -5,7 +5,7 @@
            <v-icon class="dumbbell-icon">mdi-dumbbell</v-icon>
         </v-app-bar-nav-icon>
 
-        <v-toolbar-title class="navbar-title">Iron Monkey</v-toolbar-title>
+        <v-toolbar-title class="navbar-title">Iron Monkey 1</v-toolbar-title>
 
 
         <v-menu bottom left >
