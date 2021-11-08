@@ -12,31 +12,31 @@
 
         <form style="margin-bottom: 20px;">
             <v-text-field
-            v-model="name"
-            :error-messages="nameErrors"
-            :counter="40"
-            label="Name"
-            required
-            @input="$v.name.$touch()"
-            @blur="$v.name.$touch()"
-            ></v-text-field>
-
-             <v-text-field
-            v-model="lastname"
-            :error-messages="lastNameErrors"
-            :counter="40"
-            label="Lastname"
-            required
-            @input="$v.lastname.$touch()"
-            @blur="$v.lastname.$touch()"
+              v-model="name"
+              :error-messages="nameErrors"
+              :counter="40"
+              label="Name"
+              required
+              @input="$v.name.$touch()"
+              @blur="$v.name.$touch()"
             ></v-text-field>
 
             <v-text-field
-            v-model="email"
-            :error-messages="emailErrors"
-            label="E-mail"
-            required
-            @input="$v.email.$touch()"
+              v-model="lastname"
+              :error-messages="lastNameErrors"
+              :counter="40"
+              label="Lastname"
+              required
+              @input="$v.lastname.$touch()"
+              @blur="$v.lastname.$touch()"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="email"
+              :error-messages="emailErrors"
+              label="E-mail"
+              required
+              @input="$v.email.$touch()"
             ></v-text-field>
 
             <v-text-field
@@ -52,13 +52,13 @@
             ></v-text-field>
 
             <v-select
-            v-model="select"
-            :items="items"
-            :error-messages="selectErrors"
-            label="Gender"
-            required
-            @change="$v.select.$touch()"
-            @blur="$v.select.$touch()"
+              v-model="select"
+              :items="items"
+              :error-messages="selectErrors"
+              label="Gender"
+              required
+              @change="$v.select.$touch()"
+              @blur="$v.select.$touch()"
             ></v-select>
 
             <v-dialog
@@ -261,6 +261,7 @@
         this.password = ''
       }
     },
+    
     created : function(){
         if(this.$isMobile()){
             this.isDesktop = false

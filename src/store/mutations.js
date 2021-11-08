@@ -69,5 +69,10 @@ export default {
     },
     updateDialog(state){
         state.dialog = !state.dialog;
+    },
+    updateUser(state,payload){
+        state.user.tall = payload.tall
+        state.user.wight = payload.weight
+        state.user.gender = payload.gender
     }
 }

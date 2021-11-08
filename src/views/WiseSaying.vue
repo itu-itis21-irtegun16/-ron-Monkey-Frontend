@@ -17,7 +17,10 @@
             </template>
         </v-toolbar>
         <v-row style="margin-top: 10px">
-            <v-col sm="8">
+            <v-col v-if="isDesktop" sm="8">
+                <app-wise-saying :getMessageList="getMessageList"></app-wise-saying>
+            </v-col>
+            <v-col v-else sm="12">
                 <app-wise-saying :getMessageList="getMessageList"></app-wise-saying>
             </v-col>
             <v-col sm="4" v-if="isDesktop">

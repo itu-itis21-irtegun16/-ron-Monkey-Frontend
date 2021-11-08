@@ -6,6 +6,7 @@ import SignIn from '../views/Sign-in.vue'
 import FoodList from '../views/FoodList.vue'
 import Calendar from '../views/Schedule.vue'
 import WiseSaying from '../views/WiseSaying.vue'
+import Account from '../views/Account.vue'
 
 Vue.use(VueRouter)
 
@@ -39,6 +40,11 @@ const routes = [
     path: '/wise-saying',
     name: 'wise-saying',
     component: WiseSaying
+  },
+  {
+    path: '/account',
+    name: 'account',
+    component: Account
   }
 ]
 
