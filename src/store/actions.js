@@ -1,6 +1,6 @@
 import axios from 'axios'
 const APIUrl = 'http://3.139.54.157:8080'
-const APIUrlLocalHost = 'http://localhost:3000'
+// const APIUrlLocalHost = 'http://localhost:3000'
 export default {
     initMessageList({commit}){
         axios.get(`${APIUrl}/wise-saying`)
@@ -18,7 +18,7 @@ export default {
             })
     },
     addLikeOrDislikeAction({commit}, payload){
-        axios.post(`${APIUrlLocalHost}/wise-saying`,payload)
+        axios.post(`${APIUrl}/wise-saying`,payload)
             .then((response) =>{
                 if(response.status == 200){
                     commit("addLikeOrDislike", payload);
@@ -26,7 +26,7 @@ export default {
             })
     },
     updateUser({commit}, payload){
-        axios.post(`${APIUrlLocalHost}/updateUser`,payload)
+        axios.post(`${APIUrl}/updateUser`,payload)
             .then(response =>{
                 if(response.status == 200){
                     commit("updateUser",payload)
