@@ -2,7 +2,7 @@
     <v-app style="height: 0px; margin-bottom:64px;">
       <v-app-bar light fixed shaped > 
         <v-app-bar-nav-icon @click="drawer = true">
-           <v-icon class="dumbbell-icon">mdi-dumbbell</v-icon>
+           <v-icon class="dumbbell-icon">mdi-menu</v-icon>
         </v-app-bar-nav-icon>
 
         <v-toolbar-title class="navbar-title">Iron Monkey</v-toolbar-title>
@@ -49,6 +49,46 @@
             </v-list-item>
 
           </v-list-item-group>
+
+          <v-list-group :value="false" active-class="deep-purple--text text--accent-4" prepend-icon="mdi-heart-pulse">
+            <template v-slot:activator>
+              <v-list-item-title>Sport Room</v-list-item-title>
+            </template>
+
+            <v-list-group :value="false" no-action sub-group active-class="deep-purple--text text--accent-4">
+              <template v-slot:activator>
+                <v-list-item-content>
+                  <v-list-item-title>Workouts</v-list-item-title >
+                </v-list-item-content>
+              </template>
+
+              <v-list-item v-for="([title, icon, to], i) in admins" :key="i" :to="to" active-class="deep-purple--text text--accent-4">
+                <v-list-item-title v-text="title"></v-list-item-title>
+
+                <v-list-item-icon>
+                  <v-icon v-text="icon"></v-icon>
+                </v-list-item-icon>
+              </v-list-item>
+            </v-list-group>
+
+            <v-list-group no-action sub-group active-class="deep-purple--text text--accent-4">
+              <template v-slot:activator>
+                <v-list-item-content>
+                  <v-list-item-title>My Programs</v-list-item-title>
+                </v-list-item-content>
+              </template>
+
+              <v-list-item v-for="([title, icon, to], i) in programs" :key="i" :to="to" active-class="deep-purple--text text--accent-4">
+                <v-list-item-title v-text="title"></v-list-item-title>
+
+                <v-list-item-icon>
+                  <v-icon v-text="icon"></v-icon>
+                </v-list-item-icon>
+              </v-list-item>
+            </v-list-group>
+          </v-list-group>
+
+
         </v-list>
       </v-navigation-drawer>
     </v-app>
@@ -78,9 +118,17 @@ import { mapGetters, mapMutations } from 'vuex';
         { title : 'Food', route : '/food-list', icon : 'mdi-silverware-variant', },
         { title : 'Calendar', route : '/calendar', icon : 'mdi-calendar-month', },
         { title : 'Wise-Saying', route : '/wise-saying', icon : 'mdi-pencil', },
-       
+        // { title : 'Workouts', route : '/workouts', icon : 'mdi-weight-lifter', }, 
       ],
-      check : true
+      admins: [
+        ['Workout Types', 'mdi-dumbbell', '/workout'],
+        ['Exercise Library', 'mdi-library-shelves' ,'/exercise-library'],
+      ],
+      programs: [
+        ['Workout Programs', 'mdi-playlist-edit', '/programs/workout'],
+      ],
+      check : true,
+      subMenu : true
     }),
     created() {
       if(this.$isMobile())

@@ -10,6 +10,12 @@ export default {
         return state.messageList;
     },
     getDialog(state){
-        return state.dialog
+        return state.dialog;
+    },
+    getAddEventDialog(state){
+        return state.addEventDialog;
+    },
+    getEvents(state){
+        return state.events;
     }
 }

@@ -70,9 +70,15 @@ export default {
     updateDialog(state){
         state.dialog = !state.dialog;
     },
+    updateAddEventDialog(state){
+        state.addEventDialog = !state.addEventDialog;
+    },
     updateUser(state,payload){
         state.user.tall = payload.tall
         state.user.wight = payload.weight
         state.user.gender = payload.gender
+    },
+    addEvent(state,payload){
+        state.events.push(payload)
     }
 }

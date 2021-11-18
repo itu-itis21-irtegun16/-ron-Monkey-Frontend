@@ -9,13 +9,13 @@ import axios from "axios";
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
 
+export const eventBus = new Vue();
 
 const axiosInstance = axios.create({
   baseURL: ""
 });
 
 Vue.prototype.$axios = axiosInstance; 
-
 Vue.use(VueMobileDetection)
 Vue.use(Vuelidate)
 TimeAgo.addDefaultLocale(en)

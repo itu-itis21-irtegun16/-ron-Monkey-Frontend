@@ -2,55 +2,28 @@
   <v-container :class="{customContainer : isDesktop}">
     <v-row class="fill-height calendar">
       <v-col>
+
         <v-sheet height="64">
           <v-toolbar flat>
-            <v-btn
-              :small="!isDesktop"
-              outlined
-              class="mr-4"
-              color="grey darken-2"
-              @click="setToday"
-            >
-              Today
-            </v-btn>
-            <v-btn
-              fab
-              text
-              small
-              color="grey darken-2"
-              @click="prev"
-            >
-              <v-icon small>
+            <v-btn :x-small="!isDesktop" :class="{'mr-4' : isDesktop , 'mr-1' : !isDesktop}" outlined   color="grey darken-2" @click="setToday">Today</v-btn>
+            <v-btn :class="{'small-btn' : !isDesktop}" fab text :small="!isDesktop" color="grey darken-2" @click="prev">
+              <v-icon :small="!isDesktop">
                 mdi-chevron-left
               </v-icon>
             </v-btn>
-            <v-btn
-              fab
-              text
-              small
-              color="grey darken-2"
-              @click="next"
-            >
-              <v-icon small>
+            <v-btn :class="{'small-btn' : !isDesktop}" fab text :small="!isDesktop"  color="grey darken-2" @click="next" >
+              <v-icon :small="!isDesktop">
                 mdi-chevron-right
               </v-icon>
             </v-btn>
-            <v-toolbar-title v-if="$refs.calendar">
+            <v-toolbar-title :class="{'small-title' : !isDesktop}" v-if="$refs.calendar">
               {{ $refs.calendar.title }}
             </v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-menu
-              bottom
-              right
-            >
+            <v-btn v-if="isDesktop" class="mr-3" outlined color="grey darken-2" @click="updateAddEventDialog()">Add Event</v-btn>
+              <v-menu bottom right >
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  :small="!isDesktop"
-                  outlined
-                  color="grey darken-2"
-                  v-bind="attrs"
-                  v-on="on"
-                >
+                <v-btn :x-small="!isDesktop" outlined color="grey darken-2" v-bind="attrs" v-on="on" >
                   <span>{{ typeToLabel[type] }}</span>
                   <v-icon right>
                     mdi-menu-down
@@ -74,69 +47,75 @@
             </v-menu>
           </v-toolbar>
         </v-sheet>
+
+
         <v-sheet height="600">
-          <v-calendar
-            ref="calendar"
-            v-model="focus"
-            color="primary"
-            :events="events"
-            :event-color="getEventColor"
-            :type="type"
-            @click:event="showEvent"
-            @click:more="viewDay"
-            @click:date="viewDay"
-            @change="updateRange"
-          ></v-calendar>
-          <v-menu
-            v-model="selectedOpen"
-            :close-on-content-click="false"
-            :activator="selectedElement"
-            offset-x
-          >
-            <v-card
-              color="grey lighten-4"
-              min-width="350px"
-              flat
-            >
-              <v-toolbar
-                :color="selectedEvent.color"
-                dark
-              >
-                <v-btn icon>
-                  <v-icon>mdi-pencil</v-icon>
+          <v-calendar event-ripple ref="calendar" v-model="focus" color="primary" :events="events" :event-color="getEventColor" :type="type" @click:event="showEvent" @click:more="viewDay" @click:date="viewDay" @change="updateRange" ></v-calendar>
+
+          <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x >
+            <v-card color="grey lighten-4" min-width="350px" flat >
+              <v-toolbar :color="selectedEvent.color" dark >
+                <v-btn icon @click="deleteEvent(selectedEvent.id)">
+                  <v-icon>mdi-delete</v-icon>
                 </v-btn>
                 <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn icon>
-                  <v-icon>mdi-heart</v-icon>
-                </v-btn>
-                <v-btn icon>
-                  <v-icon>mdi-dots-vertical</v-icon>
-                </v-btn>
+                
               </v-toolbar>
               <v-card-text>
-                <span v-html="selectedEvent.details"></span>
+                <!-- <span v-html="selectedEvent.details"></span> -->
+                <form v-if="currentlyEditing != selectedEvent.id">
+                  {{selectedEvent.details}}
+                </form>
+                <form v-else>
+                  <v-text-field v-model="selectedEvent.details" type="text" placeholder="add note" style="width:100%" :min-height="100">
+
+                  </v-text-field>
+                </form>
               </v-card-text>
               <v-card-actions>
-                <v-btn
-                  text
-                  color="secondary"
-                  @click="selectedOpen = false"
-                >
-                  Cancel
-                </v-btn>
+                <v-btn text color="secondary" @click="selectedOpen = false">Close</v-btn>
+                <v-btn text v-if="currentlyEditing !== selectedEvent.id" @click.prevent="editEvent(selectedEvent)">Edit</v-btn>
+                <v-btn text v-else @click.prevent="updateEvent(selectedEvent)">Save</v-btn>
               </v-card-actions>
             </v-card>
           </v-menu>
+
         </v-sheet>
+
+        <v-speed-dial v-if="!isDesktop" style="position: fixed" v-model="fab" :bottom="bottom" :right="right" :transition="transition">
+            <template v-slot:activator>
+                <v-btn v-model="fab" color="blue darken-2" dark fab>
+                    <v-icon v-if="fab">
+                        mdi-close
+                    </v-icon>
+                    <v-icon v-else>
+                        mdi-plus-outline
+                    </v-icon>
+                </v-btn>
+            </template>
+            <v-btn fab dark small color="indigo" @click="dialogOpen">
+                <v-icon>mdi-pencil-plus-outline</v-icon>
+            </v-btn> 
+        </v-speed-dial>
+        <v-dialog v-model="getAddEventDialog" persistent max-width="600px">
+          <app-add-event ></app-add-event>
+        </v-dialog>
+        
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import addEvent from './addEvents.vue'
+import {mapGetters,mapMutations} from 'vuex'
+
   export default {
     name: 'calender',
+    components : {
+      appAddEvent : addEvent
+    },
     data: () => ({
       focus: '',
       type: 'month',
@@ -152,12 +131,25 @@
       events: [],
       colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
       names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
-      isDesktop : true
+      isDesktop : true,
+      name: null,
+      details: null,
+      start: null,
+      end: null,
+      color: "1976d2",
+      currentlyEditing : null,
+      dialog : false,
+      direction: 'top',
+      fab: false,
+      right: true,
+      bottom: true,
+      transition: 'slide-y-reverse-transition',
     }),
-    mounted () {
-      this.$refs.calendar.checkChange()
+    computed : {
+      ...mapGetters(['getAddEventDialog','getEvents'])
     },
     methods: {
+      ...mapMutations(['updateAddEventDialog']),
       viewDay ({ date }) {
         this.focus = date
         this.type = 'day'
@@ -190,41 +182,74 @@
 
         nativeEvent.stopPropagation()
       },
-      updateRange ({ start, end }) {
+      updateRange () {
         const events = []
+          
+        const random_id = Math.floor(Math.random()*2)
 
-        const min = new Date(`${start.date}T00:00:00`)
-        const max = new Date(`${end.date}T23:59:59`)
-        const days = (max.getTime() - min.getTime()) / 86400000
-        const eventCount = this.rnd(days, days + 20)
-
-        for (let i = 0; i < eventCount; i++) {
-          const allDay = this.rnd(0, 3) === 0
-          const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-          const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-          const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-          const second = new Date(first.getTime() + secondTimestamp)
-
-          events.push({
-            name: this.names[this.rnd(0, this.names.length - 1)],
-            start: first,
-            end: second,
-            color: this.colors[this.rnd(0, this.colors.length - 1)],
-            timed: !allDay,
-          })
-        }
-
-        this.events = events
+        events.push({
+          name: 'eğlence',
+          details : 'lets try',
+          start: '2021-11-11 01:08:15',
+          end: '2021-11-11 01:09:15',
+          color: this.colors[this.rnd(0, this.colors.length - 1)],
+          timed: !false,
+          id: random_id
+        })
+        console.log(this.getEvents)
+        this.events = this.getEvents
       },
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
+      },
+      deleteEvent(ev){
+        console.log(ev)
+      },
+      editEvent(ev){
+        this.currentlyEditing = ev.id
+      },
+      updateEvent(ev){
+        this.events.forEach(element=>{
+          if(element.id == ev.id){
+            element.details = this.selectedEvent.details;
+            this.selectedOpen = false;
+            this.currentlyEditing = null; 
+          }
+        })
+      },
+      dialogOpen(){
+        this.updateAddEventDialog();
+        if(this.isDesktop){
+          document.querySelector('.v-dialog').style.cssText = "box-shadow: unset; overflow-y: unset; border-radius: 20px"
+        }else {
+          setTimeout(() => {
+            document.querySelector('.v-dialog').style.cssText = "border-radius: 20px"
+          }, 250);
+        }
       },
     },
     created() {
       if(this.$isMobile()){
         this.isDesktop = false
       }
-    }
+    },
+    mounted () {
+      this.$refs.calendar.checkChange();
+    },
+    watch: {
+      top (val) {
+        this.bottom = !val
+      },
+      right (val) {
+        this.left = !val
+      },
+      bottom (val) {
+        this.top = !val
+      },
+      left (val) {
+        this.right = !val
+      },
+    },
   }
 </script>
 
@@ -238,4 +263,18 @@
     text-align: center;
     padding: 10px;
   }
+
+  .small-btn{
+    width: 20px;
+  }
+
+  .small-title{
+    font-size: 14px;
+  }
+
+  /* >>> .v-dialog{
+    box-shadow: unset;
+    overflow-y: unset;
+  } */
+
 </style>

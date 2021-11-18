@@ -2,5 +2,7 @@ export default {
     user : null,
     token : null,
     messageList : [],
-    dialog : false
+    dialog : false,
+    addEventDialog: false,
+    events : []
 }

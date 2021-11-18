@@ -83,6 +83,8 @@ export default {
         padding: 20px;
         text-align: center;
         justify-content: center;
+        position: sticky;
+        top: 85px;
     }
 
     .title{ 
