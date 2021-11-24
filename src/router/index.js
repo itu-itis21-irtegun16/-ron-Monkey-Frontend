@@ -8,7 +8,8 @@ import Calendar from '../views/Schedule.vue'
 import WiseSaying from '../views/WiseSaying.vue'
 import Account from '../views/Account.vue'
 import Workout from '../views/Workouts.vue'
-import Strength from '../components/strength/strength.vue'
+import Strength from '../components/workoutTypes/strength.vue'
+import Yoga from '../components/workoutTypes/yoga.vue'
 
 Vue.use(VueRouter)
 
@@ -21,7 +22,8 @@ const routes = [
   { path: '/wise-saying', name: 'wise-saying', component: WiseSaying },
   { path: '/account', name: 'account', component: Account },
   { path : '/workout', name : 'workouts', component : Workout, },
-  { path : '/workout/strength', name : 'strength' , component : Strength}
+  { path : '/workout/strength', name : 'strength' , component : Strength},
+  { path : '/workout/yoga', name : 'yoga' , component : Yoga}
 ]
 
 const router = new VueRouter({

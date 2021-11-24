@@ -80,5 +80,14 @@ export default {
     },
     addEvent(state,payload){
         state.events.push(payload)
+    },
+    updateMuscleFilters(state, payload){
+        state.muscleTypes = payload;
+    },
+    updateFilterDialog(state){
+        state.filterDialog = !state.filterDialog
+    },
+    updateExerciseDialog(state){
+        state.exercisePopupDialog = !state.exercisePopupDialog
     }
 }

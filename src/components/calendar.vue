@@ -272,9 +272,4 @@ import {mapGetters,mapMutations} from 'vuex'
     font-size: 14px;
   }
 
-  /* >>> .v-dialog{
-    box-shadow: unset;
-    overflow-y: unset;
-  } */
-
 </style>

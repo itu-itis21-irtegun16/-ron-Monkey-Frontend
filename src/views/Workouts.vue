@@ -1,17 +1,22 @@
 <template>
     <div>
         <v-container>
-            <v-card dark :img="n.photo" :to="'workout' + n.route" class="custom-card" :class="{'mobile-card' : !isDesktop}" v-for="n in item" :key="n.name">
-                <v-card-title class="justify-center custom-card-title" >
-                    {{n.name}}
-                </v-card-title>
-            </v-card>
+            <template v-for="n in item" >
+                <v-hover v-slot="{hover}"  :key="n.name">
+                    <v-card :elevation="hover ? 16 : 2" dark :img="n.photo" :to="'workout' + n.route" class="custom-card" :class="{'mobile-card' : !isDesktop, 'card-opacity ' : !hover, 'animate__animated animate__pulse ' : hover}" >
+                        <v-card-title class="justify-center custom-card-title" >
+                            {{n.name}}
+                        </v-card-title>
+                    </v-card>
+                </v-hover>
+            </template>
         </v-container>
     </div>
     
 </template>
 
 <script>
+import "animate.css"
 export default {
     name : 'workouts',
     data : function(){
@@ -53,6 +58,10 @@ export default {
         letter-spacing: 0.1125em;
         font-weight: bold;
         font-style: normal;
+    }
+
+    .card-opacity {
+        opacity: 0.95;
     }
 
 </style>

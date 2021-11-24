@@ -17,5 +17,14 @@ export default {
     },
     getEvents(state){
         return state.events;
+    },
+    getMuscleFilters(state){
+        return state.muscleTypes;
+    },
+    getFilterDialog(state){
+        return state.filterDialog;
+    },
+    getExercisePopupDialog(state){
+        return state.exercisePopupDialog;
     }
 }

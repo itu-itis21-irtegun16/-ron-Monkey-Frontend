@@ -4,5 +4,23 @@ export default {
     messageList : [],
     dialog : false,
     addEventDialog: false,
-    events : []
+    events : [],
+    muscleTypes : {
+        biceps : false,
+        deltoids : false,
+        forearms : false,
+        triceps : false,
+        trapezius : false,
+        lats : false,
+        abs : false,
+        obliques : false,
+        pectorals : false,
+        adductors : false,
+        calves : false,
+        hamstrings : false,
+        glutes : false,
+        quads : false,
+    },
+    filterDialog : false,
+    exercisePopupDialog : false
 }

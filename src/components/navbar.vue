@@ -1,6 +1,6 @@
 <template>
-    <v-app style="height: 0px; margin-bottom:64px;">
-      <v-app-bar light fixed shaped > 
+    <v-app style="height: 0px; margin-bottom:64px;" >
+      <v-app-bar light fixed shaped style="z-index:9999"> 
         <v-app-bar-nav-icon @click="drawer = true">
            <v-icon class="dumbbell-icon">mdi-menu</v-icon>
         </v-app-bar-nav-icon>
@@ -39,7 +39,7 @@
         </v-menu>
       </v-app-bar>
 
-      <v-navigation-drawer fixed v-model="drawer" :width="drawerWidth"  temporary light mobile-breakpoint="0">
+      <v-navigation-drawer fixed v-model="drawer" :width="drawerWidth"  temporary light mobile-breakpoint="0" style="z-index:999999">
         <v-list nav dense>
           <v-list-item-group v-model="group" active-class="deep-purple--text text--accent-4">
 
@@ -133,7 +133,7 @@ import { mapGetters, mapMutations } from 'vuex';
     created() {
       if(this.$isMobile())
       {
-        this.drawerWidth = screen.width / 2;
+        this.drawerWidth = screen.width * 6.5/10;
       }else {
         this.drawerWidth = screen.width / 5;
       }
