@@ -79,7 +79,12 @@ export default {
         state.user.gender = payload.gender
     },
     addEvent(state,payload){
-        state.events.push(payload)
+        if(state.user.events){
+            state.user.events.push(payload)
+        }else{
+            state.user.events = payload;
+        }
+        localStorage.setItem('user', JSON.stringify(state.user)) 
     },
     updateMuscleFilters(state, payload){
         state.muscleTypes = payload;
@@ -89,5 +94,18 @@ export default {
     },
     updateExerciseDialog(state){
         state.exercisePopupDialog = !state.exercisePopupDialog
+    },
+    updateHoverEffectDialog(state){
+        state.hoverEffectDialog = !state.hoverEffectDialog;
+    },
+    updateWorkoutNameDialog(state){
+        state.workoutNameDialog = !state.workoutNameDialog;
+    },
+    addWorkoutPrograms (state,payload){
+        state.user.workoutPrograms.push({
+            'workoutList' : payload.workoutList,
+            'workoutName' : payload.workoutName,
+        })
+        localStorage.setItem('user', JSON.stringify(state.user));
     }
 }

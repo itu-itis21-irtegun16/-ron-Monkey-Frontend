@@ -1,5 +1,5 @@
 <template>
-    <v-app style="height: 0px; margin-bottom:64px;" >
+    <v-app  :class="{'pointerEvents' : pointerEvents}" style="height: 0px; margin-bottom:64px;" >
       <v-app-bar light fixed shaped style="z-index:9999"> 
         <v-app-bar-nav-icon @click="drawer = true">
            <v-icon class="dumbbell-icon">mdi-menu</v-icon>
@@ -141,8 +141,19 @@ import { mapGetters, mapMutations } from 'vuex';
     computed : {
       ...mapGetters([
         'isLoggedIn', 
-        'userInfo'
+        'userInfo',
+        'getAddEventDialog',
+        'getFilterDialog',
+        'getExercisePopupDialog',
+        'getHoverEffectDialog',
+        'getDialog',
+        'getWorkoutNameDialog'
         ]),
+        pointerEvents(){
+          if(this.getAddEventDialog || this.getFilterDialog || this.getExercisePopupDialog
+              || this.getHoverEffectDialog || this.getDialog || this.getWorkoutNameDialog) return true;
+          return false
+        }
     },
     methods : {
       ...mapMutations(['clearTokenAndUser']),
@@ -166,5 +177,9 @@ import { mapGetters, mapMutations } from 'vuex';
     height: 36px ;
     font-size: 36px;
     width: 36px;
+  }
+
+  .pointerEvents{
+    pointer-events: none !important;
   }
 </style>

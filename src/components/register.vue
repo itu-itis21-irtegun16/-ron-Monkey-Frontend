@@ -235,7 +235,7 @@
           weight : this.weight,
           tall : this.tall
         }
-        this.$axios.post('http://3.139.54.157:8080/register', newUser)
+        this.$axios.post('http://3.144.72.23:3000/register', newUser)
           .then(res => {
             if(res.status == 200){
               this.$router.push('/sign-in');

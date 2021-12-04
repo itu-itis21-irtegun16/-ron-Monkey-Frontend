@@ -22,5 +22,7 @@ export default {
         quads : false,
     },
     filterDialog : false,
-    exercisePopupDialog : false
+    exercisePopupDialog : false,
+    hoverEffectDialog : false,
+    workoutNameDialog : false,
 }

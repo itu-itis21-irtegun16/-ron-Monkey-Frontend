@@ -50,10 +50,10 @@
 
 
         <v-sheet height="600">
-          <v-calendar event-ripple ref="calendar" v-model="focus" color="primary" :events="events" :event-color="getEventColor" :type="type" @click:event="showEvent" @click:more="viewDay" @click:date="viewDay" @change="updateRange" ></v-calendar>
+          <v-calendar event-ripple ref="calendar" v-model="focus" color="primary" :events="userInfo.events" :event-color="getEventColor" :type="type" @click:event="showEvent" @click:more="viewDay" @click:date="viewDay" @change="updateRange" ></v-calendar>
 
-          <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x >
-            <v-card color="grey lighten-4" min-width="350px" flat >
+          <v-menu  v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement">
+            <v-card color="grey lighten-4"  :min-width=" isDesktop ? 350 : 200"  >
               <v-toolbar :color="selectedEvent.color" dark >
                 <v-btn icon @click="deleteEvent(selectedEvent.id)">
                   <v-icon>mdi-delete</v-icon>
@@ -62,21 +62,46 @@
                 <v-spacer></v-spacer>
                 
               </v-toolbar>
-              <v-card-text>
-                <!-- <span v-html="selectedEvent.details"></span> -->
-                <form v-if="currentlyEditing != selectedEvent.id">
+              <v-card-text class="workout-list" :style="[isDesktop ? {} : {'padding' : '0px'}]">
+                <!-- <app-body-path-filters :items="hoverMuscle"></app-body-path-filters> -->
+                <v-sheet class="mx-auto sheet-class" elevation="0" :style="isDesktop ? {'width' : '400px'} : {'width' : '100%'}">
+                  <h2 :style="[isDesktop ? {} : {'margin-top' : '15px'}]">Workout Program</h2>
+                  <v-slide-group v-model="model"  class="pa-4"  show-arrows >
+                    <v-slide-item v-for="(n,index) in getWorkoutProgram" :key="n.title" :id="n.title">
+                      <v-hover v-slot="{ hover }">
+                        <v-card  class="ma-4 selected-card-class" :height="isDesktop ?  250 : 250" :width="isDesktop ? 250 : 250">
+                          <v-card-title class="justify-center list-item-title">{{n.title}}</v-card-title>
+                          <video loop autoplay playsinline style="width:inherit" :src="n.video">
+                            
+                          </video>
+                          <small>{{index + 1}}</small>
+                          <v-expand-transition class="body-path-class">
+                            <div v-if="hover" class="d-flex transition-fast-in-fast-out black darken-2 v-card--reveal text-h2 white--text" style="height: 91%;">
+                              <app-body-path-filters :items="getHoverMuscle(n.focus_area)"></app-body-path-filters>
+                            </div>
+                          </v-expand-transition>
+                        </v-card>
+                      </v-hover>
+                    </v-slide-item>
+                  </v-slide-group>
+                </v-sheet>
+                <!-- <form v-if="currentlyEditing != selectedEvent.id">
                   {{selectedEvent.details}}
                 </form>
                 <form v-else>
                   <v-text-field v-model="selectedEvent.details" type="text" placeholder="add note" style="width:100%" :min-height="100">
 
                   </v-text-field>
-                </form>
+                  
+                  <v-select :items="getWorkouts" v-model="selectedEvent.details" outlined>
+
+                  </v-select>
+                </form> -->
               </v-card-text>
               <v-card-actions>
-                <v-btn text color="secondary" @click="selectedOpen = false">Close</v-btn>
-                <v-btn text v-if="currentlyEditing !== selectedEvent.id" @click.prevent="editEvent(selectedEvent)">Edit</v-btn>
-                <v-btn text v-else @click.prevent="updateEvent(selectedEvent)">Save</v-btn>
+                <!-- <v-btn text color="secondary" @click="selectedOpen = false">Close</v-btn> -->
+                <!-- <v-btn text v-if="currentlyEditing !== selectedEvent.id" @click.prevent="editEvent(selectedEvent)">Edit</v-btn> -->
+                <!-- <v-btn text v-else @click.prevent="updateEvent(selectedEvent)">Save</v-btn> -->
               </v-card-actions>
             </v-card>
           </v-menu>
@@ -98,7 +123,7 @@
                 <v-icon>mdi-pencil-plus-outline</v-icon>
             </v-btn> 
         </v-speed-dial>
-        <v-dialog v-model="getAddEventDialog" persistent max-width="600px">
+        <v-dialog  v-model="getAddEventDialog" persistent max-width="600px">
           <app-add-event ></app-add-event>
         </v-dialog>
         
@@ -108,15 +133,35 @@
 </template>
 
 <script>
+import bodyPathFilters from './bodyPathHover.vue'
 import addEvent from './addEvents.vue'
 import {mapGetters,mapMutations} from 'vuex'
 
   export default {
     name: 'calender',
     components : {
-      appAddEvent : addEvent
+      appAddEvent : addEvent,
+      appBodyPathFilters : bodyPathFilters
     },
     data: () => ({
+      counter : 0,
+      hoverMuscle : {
+          biceps : false,
+          deltoids : false,
+          forearms : false,
+          triceps : false,
+          trapezius : false,
+          lats : false,
+          abs : false,
+          obliques : false,
+          pectorals : false,
+          adductors : false,
+          calves : false,
+          hamstrings : false,
+          glutes : false,
+          quads : false,
+          isCalendar : true
+      },
       focus: '',
       type: 'month',
       typeToLabel: {
@@ -128,7 +173,6 @@ import {mapGetters,mapMutations} from 'vuex'
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
-      events: [],
       colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
       names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
       isDesktop : true,
@@ -144,9 +188,30 @@ import {mapGetters,mapMutations} from 'vuex'
       right: true,
       bottom: true,
       transition: 'slide-y-reverse-transition',
+      model : null
     }),
     computed : {
-      ...mapGetters(['getAddEventDialog','getEvents'])
+      ...mapGetters(
+        { getAddEventDialog : 'getAddEventDialog',
+          userInfo : 'userInfo'
+        }),
+      getWorkouts(){
+        var workoutNames = [];
+        this.userInfo.workoutPrograms.forEach(element => {
+          workoutNames.push(element.workoutName);
+        });
+        return workoutNames;
+      },
+      getWorkoutProgram(){
+        var wList = [];
+        this.userInfo.workoutPrograms.forEach(element =>{
+          if(element.workoutName == this.selectedEvent.details){
+            wList = element.workoutList;
+          }
+        })
+        return wList;
+      },
+      
     },
     methods: {
       ...mapMutations(['updateAddEventDialog']),
@@ -169,7 +234,7 @@ import {mapGetters,mapMutations} from 'vuex'
       showEvent ({ nativeEvent, event }) {
         const open = () => {
           this.selectedEvent = event
-          this.selectedElement = nativeEvent.target
+          this.selectedElement = nativeEvent.target;
           requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
         }
 
@@ -179,25 +244,10 @@ import {mapGetters,mapMutations} from 'vuex'
         } else {
           open()
         }
-
-        nativeEvent.stopPropagation()
+        nativeEvent.stopPropagation();
+        
       },
       updateRange () {
-        const events = []
-          
-        const random_id = Math.floor(Math.random()*2)
-
-        events.push({
-          name: 'eğlence',
-          details : 'lets try',
-          start: '2021-11-11 01:08:15',
-          end: '2021-11-11 01:09:15',
-          color: this.colors[this.rnd(0, this.colors.length - 1)],
-          timed: !false,
-          id: random_id
-        })
-        console.log(this.getEvents)
-        this.events = this.getEvents
       },
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
@@ -209,7 +259,7 @@ import {mapGetters,mapMutations} from 'vuex'
         this.currentlyEditing = ev.id
       },
       updateEvent(ev){
-        this.events.forEach(element=>{
+        this.userInfo.events.forEach(element=>{
           if(element.id == ev.id){
             element.details = this.selectedEvent.details;
             this.selectedOpen = false;
@@ -227,6 +277,29 @@ import {mapGetters,mapMutations} from 'vuex'
           }, 250);
         }
       },
+      getHoverMuscle(val){
+        this.hoverMuscle = {
+          biceps : false,
+          deltoids : false,
+          forearms : false,
+          triceps : false,
+          trapezius : false,
+          lats : false,
+          abs : false,
+          obliques : false,
+          pectorals : false,
+          adductors : false,
+          calves : false,
+          hamstrings : false,
+          glutes : false,
+          quads : false,
+          isCalendar : true
+        }
+        val.forEach(element =>{
+          this.hoverMuscle[element] = true;
+        })
+        return this.hoverMuscle;
+      },
     },
     created() {
       if(this.$isMobile()){
@@ -235,20 +308,6 @@ import {mapGetters,mapMutations} from 'vuex'
     },
     mounted () {
       this.$refs.calendar.checkChange();
-    },
-    watch: {
-      top (val) {
-        this.bottom = !val
-      },
-      right (val) {
-        this.left = !val
-      },
-      bottom (val) {
-        this.top = !val
-      },
-      left (val) {
-        this.right = !val
-      },
     },
   }
 </script>
@@ -270,6 +329,57 @@ import {mapGetters,mapMutations} from 'vuex'
 
   .small-title{
     font-size: 14px;
+  }
+
+  .v-dialog__content.v-dialog__content--active >>> .v-dialog.v-dialog--active.v-dialog--persistent {
+    margin-top: 50px;
+  }
+
+  .sheet-class {
+    background-color: unset;
+    box-shadow: unset;
+  }
+
+  .workout-list{
+    justify-content: center;
+    text-align: center;
+  }
+
+
+  .v-card__text.workout-list  >>> .v-slide-group__next {
+    min-width: 0px !important;
+    display: flex !important;
+  }
+
+  .v-card__text.workout-list >>> .v-slide-group__prev {
+    min-width: 0px !important;
+    display: flex !important;
+
+  }
+
+  .v-card__text.workout-list >>> .v-slide-group__next--disabled {
+    pointer-events: unset;
+  }
+  
+  .v-card__text.workout-list >>> .v-slide-group__prev--disabled{
+    pointer-events: unset;
+  }
+
+  /* >>> .v-slide-group__content {
+    transform: translateX(0px);
+  } */
+
+  .v-card--reveal {
+    align-items: center;
+    bottom: 0;
+    justify-content: center;
+    opacity: 1;
+    position: absolute;
+    width: 100%;
+  }
+
+  .selected-card-class{
+    border-radius: 20px;
   }
 
 </style>

@@ -15,9 +15,6 @@ export default {
     getAddEventDialog(state){
         return state.addEventDialog;
     },
-    getEvents(state){
-        return state.events;
-    },
     getMuscleFilters(state){
         return state.muscleTypes;
     },
@@ -26,5 +23,11 @@ export default {
     },
     getExercisePopupDialog(state){
         return state.exercisePopupDialog;
+    },
+    getHoverEffectDialog(state){
+        return state.hoverEffectDialog;
+    },
+    getWorkoutNameDialog(state){
+        return state.workoutNameDialog;
     }
 }

@@ -42,10 +42,14 @@
 
                     <v-card light class="exercise-features">
                         <v-card-title class="justify-center box-title">Focus Area</v-card-title>
-                        <v-card-subtitle class="sub-title">
-                            <span style="margin-right:5px" v-for="n in item.focus_area" :key="n">{{n}}</span>
+                        <v-card-subtitle class="sub-title text-overflow-class">
+                            <p style="margin-bottom:0px;margin-right:5px;text-transform:capitalize;display:inline-block" v-for="n in item.focus_area" :key="n">{{n}}</p>
+                             <v-dialog v-model="getHoverEffectDialog" persistent max-width="600px">
+                                <app-body-path-filters :items="hoverMuscle"></app-body-path-filters>
+                            </v-dialog>
                         </v-card-subtitle>
                     </v-card>
+
                 </div>
             </div>
 
@@ -64,24 +68,76 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import bodyPathFilters from './bodyPathHover.vue'
+import { mapMutations, mapGetters } from 'vuex'
 export default {
     name : 'exercise-popup',
     props : [
         'item'
     ],
+    components : {
+        appBodyPathFilters : bodyPathFilters
+    },
     data : function () {
         return {
-            isDesktop : true
+            isDesktop : true,
+            hoverEffect :  false,
+            focusArea : null,
+            hoverMuscle : {
+                biceps : false,
+                deltoids : false,
+                forearms : false,
+                triceps : false,
+                trapezius : false,
+                lats : false,
+                abs : false,
+                obliques : false,
+                pectorals : false,
+                adductors : false,
+                calves : false,
+                hamstrings : false,
+                glutes : false,
+                quads : false,
+            },
         }
+    },
+    computed : {
+        ...mapGetters(['getHoverEffectDialog'])
     },
     methods : {
-        ...mapMutations(['updateExerciseDialog']),
+        ...mapMutations(['updateExerciseDialog', 'updateHoverEffectDialog']),
         closePopup(){
+            this.hoverMuscle = {
+                biceps : false,
+                deltoids : false,
+                forearms : false,
+                triceps : false,
+                trapezius : false,
+                lats : false,
+                abs : false,
+                obliques : false,
+                pectorals : false,
+                adductors : false,
+                calves : false,
+                hamstrings : false,
+                glutes : false,
+                quads : false,
+            }
             this.updateExerciseDialog();
-        }
+        },
+        openPopup(val){
+            val.forEach(element => {
+                this.hoverMuscle[element] = true;
+            });
+            this.updateHoverEffectDialog();
+        },
+        mouseOver(){
+            this.openPopup(this.item.focus_area)
+        },
     },
     mounted(){
+        var focus_area = document.querySelectorAll('.exercise-features.v-card.v-sheet.theme--light')[5];
+        focus_area.addEventListener("mouseover", this.mouseOver);
     },
     created(){
         if(this.$isMobile()){
@@ -93,6 +149,11 @@ export default {
 </script>
 
 <style scoped>
+
+    .v-dialog__content >>> .v-dialog{
+        box-shadow: unset;
+    }
+
     .exercise-popup-card{
         border-radius: 20px;
         padding: 25px;
@@ -143,5 +204,12 @@ export default {
         margin: auto;
         text-align: center;
         padding: 6px;
+        text-transform: capitalize;
+    }
+
+    .text-overflow-class {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 </style>

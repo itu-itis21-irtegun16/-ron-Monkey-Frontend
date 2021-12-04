@@ -97,7 +97,7 @@ export default {
                 password : this.password
             }
 
-            this.$axios.post('http://3.139.54.157:8080/sign-in', user)
+            this.$axios.post('http://3.144.72.23:3000/sign-in', user)
                 .then(res =>{
                     if(res.status === 200){
                         localStorage.setItem('token', res.data.token)
