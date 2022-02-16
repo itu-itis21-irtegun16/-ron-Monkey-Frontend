@@ -42,6 +42,7 @@
                 <v-btn >Create a new account</v-btn>
             </router-link>
         </v-card-actions>
+        <v-checkbox v-model="deneme"></v-checkbox>
         
     </v-card>
 </template>
@@ -59,6 +60,7 @@ export default {
     },
 
     data: () => ({
+        deneme: false,
         email: '',
         show1: false,
         password: '',

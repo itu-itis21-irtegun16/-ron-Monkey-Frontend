@@ -64,19 +64,19 @@
               </v-toolbar>
               <v-card-text class="workout-list" :style="[isDesktop ? {} : {'padding' : '0px'}]">
                 <!-- <app-body-path-filters :items="hoverMuscle"></app-body-path-filters> -->
-                <v-sheet class="mx-auto sheet-class" elevation="0" :style="isDesktop ? {'width' : '400px'} : {'width' : '100%'}">
+                <v-sheet class="mx-auto sheet-class" elevation="0" :style="isDesktop ? {'width' : '340px'} : {'width' : '100%'}">
                   <h2 :style="[isDesktop ? {} : {'margin-top' : '15px'}]">Workout Program</h2>
                   <v-slide-group v-model="model"  class="pa-4"  show-arrows >
                     <v-slide-item v-for="(n,index) in getWorkoutProgram" :key="n.title" :id="n.title">
                       <v-hover v-slot="{ hover }">
-                        <v-card  class="ma-4 selected-card-class" :height="isDesktop ?  250 : 250" :width="isDesktop ? 250 : 250">
-                          <v-card-title class="justify-center list-item-title">{{n.title}}</v-card-title>
+                        <v-card  class="ma-4 selected-card-class" :height="isDesktop ?  200 : 200" :width="isDesktop ? 200 : 200">
+                          <v-card-title style="padding-bottom:6px" class="justify-center list-item-title">{{n.title}}</v-card-title>
                           <video loop autoplay playsinline style="width:inherit" :src="n.video">
                             
                           </video>
                           <small>{{index + 1}}</small>
                           <v-expand-transition class="body-path-class">
-                            <div v-if="hover" class="d-flex transition-fast-in-fast-out black darken-2 v-card--reveal text-h2 white--text" style="height: 91%;">
+                            <div v-if="hover" class="d-flex transition-fast-in-fast-out black darken-2 v-card--reveal text-h2 white--text" style="height: 89%;">
                               <app-body-path-filters :items="getHoverMuscle(n.focus_area)"></app-body-path-filters>
                             </div>
                           </v-expand-transition>
@@ -357,6 +357,20 @@ import {mapGetters,mapMutations} from 'vuex'
 
   }
 
+  .list-item-title{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .ma-4.selected-card-class.v-card.v-sheet.theme--light >>> .v-card__title {
+    display: inherit;
+  }
+
+  .pa-4.v-item-group.theme--light.v-slide-group >>> .v-slide-group__wrapper {
+    flex: 1 1 350px;
+  }
+
   .v-card__text.workout-list >>> .v-slide-group__next--disabled {
     pointer-events: unset;
   }
@@ -364,10 +378,6 @@ import {mapGetters,mapMutations} from 'vuex'
   .v-card__text.workout-list >>> .v-slide-group__prev--disabled{
     pointer-events: unset;
   }
-
-  /* >>> .v-slide-group__content {
-    transform: translateX(0px);
-  } */
 
   .v-card--reveal {
     align-items: center;

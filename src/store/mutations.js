@@ -105,6 +105,7 @@ export default {
         state.user.workoutPrograms.push({
             'workoutList' : payload.workoutList,
             'workoutName' : payload.workoutName,
+            'workoutTime' : payload.workoutTime,
         })
         localStorage.setItem('user', JSON.stringify(state.user));
     }

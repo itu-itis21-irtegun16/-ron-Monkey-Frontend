@@ -80,9 +80,6 @@
             @blur="$v.workoutName.$touch()"
             class="workout-fields-input" v-model="workoutName" outlined label="Enter workout name"
             ></v-text-field>
-          
-
-
           <span class="workout-fields">Workout Time <span style="color:red">*</span> </span>
           <v-row>
             <v-col cols="12" sm="6" md="6" :style="[!isDesktop ? {'padding-bottom' : '0'} : {}]">

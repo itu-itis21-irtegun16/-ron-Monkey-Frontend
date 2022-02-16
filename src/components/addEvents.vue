@@ -65,8 +65,19 @@
 </template>
 
 <script>
+import { validationMixin } from 'vuelidate'
+import { required, maxLength } from 'vuelidate/lib/validators'
 import { mapMutations,mapGetters } from  'vuex'
   export default {
+    mixins: [validationMixin],
+
+    validations: {
+      workoutName: { required, maxLength: maxLength(40) },
+      workoutTimeHour: { required },
+      workoutTimeMins : { required }
+      
+    },
+
     data: () => ({
         eventName : '',
         date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
